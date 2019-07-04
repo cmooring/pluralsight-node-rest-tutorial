@@ -23,7 +23,15 @@ function routes(Book) {
   });
 
   bookRouter.route('/books/:bookId')
-    .get((req, res) => res.json(req.book))
+    .get((req, res) => {
+
+      const newBook = req.book.toJSON();
+      newBook.links = {};
+      newBook.links.filterByThisGenre = `http://${req.headers.host}/api/books?genre=${encodeURIComponent(req.book.genre)}`;
+      newBook.links.all = `http://${req.headers.host}/api/books`;
+      
+      res.json(newBook)
+    })
     .put((req, res) => {
       const { book } = req;
       book.title = req.body.title;
